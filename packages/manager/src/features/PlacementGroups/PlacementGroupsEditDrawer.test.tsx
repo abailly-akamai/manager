@@ -40,13 +40,13 @@ describe('PlacementGroupsCreateDrawer', () => {
           affinity_type: 'anti_affinity:local',
           id: 1,
           label: 'PG-to-edit',
-          region: 'us-east',
+          region: 'us-iad',
         })}
         disableEditButton={false}
         onClose={vi.fn()}
         onPlacementGroupEdit={vi.fn()}
         open={true}
-        region={regionFactory.build({ id: 'us-east', label: 'Newark, NJ' })}
+        region={regionFactory.build({ id: 'us-iad', label: 'Washington, DC' })}
       />
     );
 
@@ -55,7 +55,7 @@ describe('PlacementGroupsCreateDrawer', () => {
         name: 'Edit Placement Group PG-to-edit (Anti-affinity)',
       })
     ).toBeInTheDocument();
-    expect(getByText('Newark, NJ (us-east)')).toBeInTheDocument();
+    expect(getByText('Washington, DC (us-iad)')).toBeInTheDocument();
     expect(getByLabelText('Label')).toBeEnabled();
     expect(getByLabelText('Label')).toHaveValue('PG-to-edit');
     expect(getByRole('button', { name: 'Cancel' })).toBeEnabled();

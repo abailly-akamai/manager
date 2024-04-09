@@ -110,6 +110,7 @@
   },
   "devDependencies": {
     "@linode/eslint-plugin-cloud-manager": "^0.0.3",
+    "@mswjs/data": "^0.16.1",
     "@storybook/addon-actions": "^8.0.5",
     "@storybook/addon-controls": "^8.0.5",
     "@storybook/addon-docs": "^8.0.5",

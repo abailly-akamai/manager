@@ -9,7 +9,6 @@ import {
 import { DateTime } from 'luxon';
 import { HttpResponse, http } from 'msw';
 
-import { regions } from 'src/__data__/regionsData';
 import { MOCK_THEME_STORAGE_KEY } from 'src/dev-tools/ThemeSelector';
 import {
   VLANFactory,
@@ -78,7 +77,6 @@ import {
   objectStorageKeyFactory,
   paymentFactory,
   paymentMethodFactory,
-  placementGroupFactory,
   possibleMySQLReplicationTypes,
   possiblePostgresReplicationTypes,
   proDedicatedTypeFactory,
@@ -104,6 +102,9 @@ import { accountUserFactory } from 'src/factories/accountUsers';
 import { grantFactory, grantsFactory } from 'src/factories/grants';
 import { pickRandom } from 'src/utilities/random';
 import { getStorage } from 'src/utilities/storage';
+
+import { mswDB } from './db';
+import { placementGroups } from './handlers/placementGroup';
 
 export const makeResourcePage = <T>(
   e: T[],
@@ -599,7 +600,8 @@ export const handlers = [
     }
   ),
   http.get('*/regions', async () => {
-    return HttpResponse.json(makeResourcePage(regions));
+    const dbRegions = mswDB.region.getAll();
+    return HttpResponse.json(makeResourcePage(dbRegions));
   }),
   http.get('*/images', async () => {
     const privateImages = imageFactory.buildList(5, {
@@ -738,25 +740,32 @@ export const handlers = [
       }),
       eventLinode,
       multipleIPLinode,
+      ...mswDB.linode.getAll(),
     ];
 
     if (request.headers.get('x-filter')) {
       const headers = JSON.parse(request.headers.get('x-filter') || '{}');
       const orFilters = headers['+or'];
+      const regionFilter = headers['region'];
 
       if (orFilters) {
         const filteredLinodes = linodes.filter((linode) => {
           const filteredById = orFilters.some(
             (filter: { id: number }) => filter.id === linode.id
           );
-          const filteredByRegion = orFilters.some(
-            (filter: { region: string }) => filter.region === linode.region
-          );
 
-          return (filteredById || filteredByRegion) ?? linodes;
+          return filteredById ?? linodes;
         });
 
         return HttpResponse.json(makeResourcePage(filteredLinodes));
+      }
+
+      if (regionFilter) {
+        const filteredLinodes = linodes.filter(
+          (linode) => linode.region === regionFilter
+        );
+
+        return HttpResponse.json(makeResourcePage(filteredLinodes ?? linodes));
       }
     }
     return HttpResponse.json(makeResourcePage(linodes));
@@ -2074,217 +2083,10 @@ export const handlers = [
       }),
     ]);
   }),
-
-  // Placement Groups
-  http.get('*/placement/groups', () => {
-    return HttpResponse.json(
-      makeResourcePage([
-        placementGroupFactory.build({
-          affinity_type: 'anti_affinity:local',
-          id: 1,
-          is_compliant: true,
-          is_strict: true,
-          members: [1, 2, 3, 4, 5, 6, 7, 8, 43].map((linode) => ({
-            is_compliant: true,
-            linode_id: linode,
-          })),
-          region: 'us-east',
-        }),
-        placementGroupFactory.build({
-          affinity_type: 'affinity:local',
-          id: 2,
-          is_compliant: true,
-          is_strict: true,
-          members: [
-            {
-              is_compliant: true,
-              linode_id: 9,
-            },
-            {
-              is_compliant: true,
-              linode_id: 10,
-            },
-            {
-              is_compliant: true,
-              linode_id: 11,
-            },
-          ],
-          region: 'us-west',
-        }),
-        placementGroupFactory.build({
-          affinity_type: 'affinity:local',
-          id: 3,
-          is_compliant: true,
-          is_strict: true,
-          members: [
-            {
-              is_compliant: true,
-              linode_id: 12,
-            },
-          ],
-          region: 'ca-central',
-        }),
-      ])
-    );
-  }),
-  http.get('*/placement/groups/:placementGroupId', ({ params }) => {
-    if (params.placementGroupId === 'undefined') {
-      return HttpResponse.json({}, { status: 404 });
-    }
-
-    return HttpResponse.json(
-      placementGroupFactory.build({
-        id: 1,
-      })
-    );
-  }),
-  http.post('*/placement/groups', async ({ request }) => {
-    const reqBody = await request.json();
-    const body = reqBody as any;
-    const response = placementGroupFactory.build({
-      ...body,
-    });
-
-    return HttpResponse.json(response);
-  }),
-  http.put(
-    '*/placement/groups/:placementGroupId',
-    async ({ params, request }) => {
-      const body = await request.json();
-
-      if (params.placementGroupId === '-1') {
-        return HttpResponse.json({}, { status: 404 });
-      }
-
-      const response = placementGroupFactory.build({
-        ...(body as any),
-      });
-
-      return HttpResponse.json(response);
-    }
-  ),
-  http.delete('*/placement/groups/:placementGroupId', ({ params }) => {
-    if (params.placementGroupId === '-1') {
-      return HttpResponse.json({}, { status: 404 });
-    }
-
-    return HttpResponse.json({});
-  }),
-  http.post(
-    '*/placement/groups/:placementGroupId/assign',
-    async ({ params, request }) => {
-      const body = await request.json();
-
-      if (params.placementGroupId === '-1') {
-        return HttpResponse.json({}, { status: 404 });
-      }
-
-      const response = placementGroupFactory.build({
-        affinity_type: 'anti_affinity:local',
-        id: Number(params.placementGroupId) ?? -1,
-        label: 'pg-1',
-        members: [
-          {
-            is_compliant: true,
-            linode_id: 1,
-          },
-          {
-            is_compliant: true,
-            linode_id: 2,
-          },
-          {
-            is_compliant: true,
-            linode_id: 3,
-          },
-          {
-            is_compliant: true,
-            linode_id: 4,
-          },
-          {
-            is_compliant: true,
-            linode_id: 5,
-          },
-          {
-            is_compliant: true,
-            linode_id: 6,
-          },
-          {
-            is_compliant: true,
-            linode_id: 7,
-          },
-          {
-            is_compliant: true,
-            linode_id: 8,
-          },
-          {
-            is_compliant: false,
-            linode_id: 43,
-          },
-          {
-            is_compliant: true,
-            linode_id: (body as any).linodes[0],
-          },
-        ],
-      });
-
-      return HttpResponse.json(response);
-    }
-  ),
-  http.post('*/placement/groups/:placementGroupId/unassign', ({ params }) => {
-    if (params.placementGroupId === '-1') {
-      return HttpResponse.json({}, { status: 404 });
-    }
-
-    const response = placementGroupFactory.build({
-      affinity_type: 'anti_affinity:local',
-      id: Number(params.placementGroupId) ?? -1,
-      label: 'pg-1',
-      members: [
-        {
-          is_compliant: true,
-          linode_id: 1,
-        },
-
-        {
-          is_compliant: true,
-          linode_id: 2,
-        },
-        {
-          is_compliant: true,
-          linode_id: 3,
-        },
-        {
-          is_compliant: true,
-          linode_id: 4,
-        },
-        {
-          is_compliant: true,
-          linode_id: 5,
-        },
-        {
-          is_compliant: true,
-          linode_id: 6,
-        },
-        {
-          is_compliant: true,
-          linode_id: 7,
-        },
-        {
-          is_compliant: true,
-          linode_id: 8,
-        },
-        {
-          is_compliant: false,
-          linode_id: 43,
-        },
-      ],
-    });
-
-    return HttpResponse.json(response);
-  }),
   ...entityTransfers,
   ...statusPage,
   ...databases,
   ...aclb,
   ...vpc,
+  ...placementGroups,
 ];

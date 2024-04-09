@@ -25,11 +25,12 @@ describe('PlacementGroupsRow', () => {
             linodeFactory.build({
               id: 1,
               label: 'linode1',
-              region: 'us-east',
+              region: 'us-iad',
             }),
           ]}
           placementGroup={placementGroupFactory.build({
             affinity_type: 'anti_affinity:local',
+            id: 1,
             is_compliant: false,
             label: 'group 1',
             members: [
@@ -38,12 +39,12 @@ describe('PlacementGroupsRow', () => {
                 linode_id: 1,
               },
             ],
-            region: 'us-east',
+            region: 'us-iad',
           })}
           region={regionFactory.build({
             country: 'us',
-            id: 'us-east',
-            label: 'Newark, NJ',
+            id: 'us-iad',
+            label: 'Washington, DC',
             status: 'ok',
           })}
           disabled
@@ -60,7 +61,7 @@ describe('PlacementGroupsRow', () => {
     expect(getByTestId('placement-group-1-assigned-linodes')).toHaveTextContent(
       '1'
     );
-    expect(getByText('Newark, NJ')).toBeInTheDocument();
+    expect(getByText('Washington, DC')).toBeInTheDocument();
     expect(getByRole('button', { name: 'Edit' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Delete' })).toBeInTheDocument();
   });

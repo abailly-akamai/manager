@@ -60,15 +60,12 @@ describe('PlacementGroupsCreateDrawer', () => {
 
   it('should populate the region select with the selected region prop', async () => {
     const { getByTestId } = renderWithTheme(
-      <PlacementGroupsCreateDrawer
-        selectedRegionId="us-east"
-        {...commonProps}
-      />
+      <PlacementGroupsCreateDrawer selectedRegionId="us-iad" {...commonProps} />
     );
 
     await waitFor(() => {
       expect(getByTestId('selected-region')).toHaveTextContent(
-        'Newark, NJ (us-east)'
+        'Washington, DC (us-iad)'
       );
     });
   });
@@ -88,10 +85,10 @@ describe('PlacementGroupsCreateDrawer', () => {
     const regionSelect = getByPlaceholderText('Select a Region');
     fireEvent.focus(regionSelect);
     fireEvent.change(regionSelect, {
-      target: { value: 'Newark, NJ (us-east)' },
+      target: { value: 'Washington, DC (us-iad)' },
     });
     await waitFor(() => {
-      const selectedRegionOption = getByText('Newark, NJ (us-east)');
+      const selectedRegionOption = getByText('Washington, DC (us-iad)');
       fireEvent.click(selectedRegionOption);
     });
 
@@ -104,7 +101,7 @@ describe('PlacementGroupsCreateDrawer', () => {
         affinity_type: 'anti_affinity:local',
         is_strict: true,
         label: 'my-label',
-        region: 'us-east',
+        region: 'us-iad',
       });
     });
   });
