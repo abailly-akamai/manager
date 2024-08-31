@@ -75,7 +75,7 @@ export const PlacementGroupsDetail = () => {
     placementGroup?.members.some((pgLinode) => pgLinode.linode_id === linode.id)
   );
 
-  const { placement_group_type, label } = placementGroup;
+  const { label, placement_group_type } = placementGroup;
 
   const resetEditableLabel = () => {
     return `${label} (${PLACEMENT_GROUP_TYPES[placement_group_type]})`;

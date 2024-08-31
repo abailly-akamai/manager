@@ -68,6 +68,7 @@ const props: AddonsPanelProps = {
       placement_group: {
         id: 1,
         label: 'test',
+        migrating_to: null,
         placement_group_policy: 'strict',
         placement_group_type: 'anti_affinity:local',
       },
@@ -115,6 +116,7 @@ const props: AddonsPanelProps = {
       placement_group: {
         id: 1,
         label: 'test',
+        migrating_to: null,
         placement_group_policy: 'strict',
         placement_group_type: 'anti_affinity:local',
       },
@@ -161,6 +163,7 @@ const props: AddonsPanelProps = {
       placement_group: {
         id: 1,
         label: 'test',
+        migrating_to: null,
         placement_group_policy: 'strict',
         placement_group_type: 'anti_affinity:local',
       },
