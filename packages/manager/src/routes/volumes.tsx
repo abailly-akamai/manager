@@ -39,6 +39,102 @@ const volumesCreateRoute = createRoute({
   )
 );
 
+const volumeEditRoute = createRoute({
+  getParentRoute: () => volumesRoute,
+  path: '$volumeId/edit',
+  parseParams: (params) => ({
+    volumeId: Number(params.volumeId),
+  }),
+}).lazy(() =>
+  import('src/features/Volumes/VolumesLanding').then(
+    (m) => m.volumesLandingLazyRoute
+  )
+);
+
+const volumeDetailsRoute = createRoute({
+  getParentRoute: () => volumesRoute,
+  path: '$volumeId/details',
+  parseParams: (params) => ({
+    volumeId: Number(params.volumeId),
+  }),
+}).lazy(() =>
+  import('src/features/Volumes/VolumesLanding').then(
+    (m) => m.volumesLandingLazyRoute
+  )
+);
+
+const volumeResizeRoute = createRoute({
+  getParentRoute: () => volumesRoute,
+  path: '$volumeId/resize',
+  parseParams: (params) => ({
+    volumeId: Number(params.volumeId),
+  }),
+}).lazy(() =>
+  import('src/features/Volumes/VolumesLanding').then(
+    (m) => m.volumesLandingLazyRoute
+  )
+);
+
+const volumeCloneRoute = createRoute({
+  getParentRoute: () => volumesRoute,
+  path: '$volumeId/clone',
+  parseParams: (params) => ({
+    volumeId: Number(params.volumeId),
+  }),
+}).lazy(() =>
+  import('src/features/Volumes/VolumesLanding').then(
+    (m) => m.volumesLandingLazyRoute
+  )
+);
+
+const volumeAttachRoute = createRoute({
+  getParentRoute: () => volumesRoute,
+  path: '$volumeId/attach',
+  parseParams: (params) => ({
+    volumeId: Number(params.volumeId),
+  }),
+}).lazy(() =>
+  import('src/features/Volumes/VolumesLanding').then(
+    (m) => m.volumesLandingLazyRoute
+  )
+);
+
+const volumeDetachRoute = createRoute({
+  getParentRoute: () => volumesRoute,
+  path: '$volumeId/detach',
+  parseParams: (params) => ({
+    volumeId: Number(params.volumeId),
+  }),
+}).lazy(() =>
+  import('src/features/Volumes/VolumesLanding').then(
+    (m) => m.volumesLandingLazyRoute
+  )
+);
+
+const volumeUpgradeRoute = createRoute({
+  getParentRoute: () => volumesRoute,
+  path: '$volumeId/upgrade',
+  parseParams: (params) => ({
+    volumeId: Number(params.volumeId),
+  }),
+}).lazy(() =>
+  import('src/features/Volumes/VolumesLanding').then(
+    (m) => m.volumesLandingLazyRoute
+  )
+);
+
+const volumeDeleteRoute = createRoute({
+  getParentRoute: () => volumesRoute,
+  path: '$volumeId/delete',
+  parseParams: (params) => ({
+    volumeId: Number(params.volumeId),
+  }),
+}).lazy(() =>
+  import('src/features/Volumes/VolumesLanding').then(
+    (m) => m.volumesLandingLazyRoute
+  )
+);
+
 const volumesCatchAllRoute = createRoute({
   beforeLoad: () => {
     throw redirect({
@@ -50,7 +146,16 @@ const volumesCatchAllRoute = createRoute({
 });
 
 export const volumesRouteTree = volumesRoute.addChildren([
-  volumesIndexRoute,
+  volumesIndexRoute.addChildren([
+    volumeEditRoute,
+    volumeDetailsRoute,
+    volumeResizeRoute,
+    volumeCloneRoute,
+    volumeAttachRoute,
+    volumeDetachRoute,
+    volumeUpgradeRoute,
+    volumeDeleteRoute,
+  ]),
   volumesCreateRoute,
   volumesCatchAllRoute,
 ]);
