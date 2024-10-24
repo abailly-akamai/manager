@@ -1,4 +1,4 @@
-import { Outlet, createRoute } from '@tanstack/react-router';
+import { Outlet, createRoute, redirect } from '@tanstack/react-router';
 import React from 'react';
 
 import { ProductInformationBanner } from 'src/components/ProductInformationBanner/ProductInformationBanner';
@@ -39,7 +39,18 @@ const volumesCreateRoute = createRoute({
   )
 );
 
+const volumesCatchAllRoute = createRoute({
+  beforeLoad: () => {
+    throw redirect({
+      to: '/volumes',
+    });
+  },
+  getParentRoute: () => volumesRoute,
+  path: '*',
+});
+
 export const volumesRouteTree = volumesRoute.addChildren([
   volumesIndexRoute,
   volumesCreateRoute,
+  volumesCatchAllRoute,
 ]);
