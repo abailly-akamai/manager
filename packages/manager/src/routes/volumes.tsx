@@ -24,6 +24,13 @@ const volumesRoute = createRoute({
 const volumesIndexRoute = createRoute({
   getParentRoute: () => volumesRoute,
   path: '/',
+  validateSearch: (search: { page: number; query: string | undefined }) => {
+    return {
+      page: search.page ?? 1,
+      // pageSize: search.pageSize ? Number(search.pageSize) : undefined,
+      query: search.query,
+    };
+  },
 }).lazy(() =>
   import('src/features/Volumes/VolumesLanding').then(
     (m) => m.volumesLandingLazyRoute
@@ -139,6 +146,10 @@ const volumesCatchAllRoute = createRoute({
   beforeLoad: () => {
     throw redirect({
       to: '/volumes',
+      search: {
+        page: 1,
+        query: '',
+      },
     });
   },
   getParentRoute: () => volumesRoute,
