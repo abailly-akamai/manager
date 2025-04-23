@@ -1,5 +1,5 @@
 import { Button } from '@linode/ui';
-import { useMatch, useNavigate } from '@tanstack/react-router';
+import { useMatch, useNavigate, useParams } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 
@@ -41,6 +41,9 @@ export type FormikProps = FormikBag<{}, CredentialPayload>;
 export const CredentialList = () => {
   const navigate = useNavigate();
   const match = useMatch({ strict: false });
+  const params = useParams({
+    strict: false,
+  });
   const { enqueueSnackbar } = useSnackbar();
   const {
     data,
@@ -50,13 +53,14 @@ export const CredentialList = () => {
 
   const credentials = data || [];
 
+  const managedCredentialQuery = useManagedCredentialQuery(
+    params.credentialId ?? -1,
+    match.routeId === '/managed/credentials/$credentialId/edit' ||
+      match.routeId === '/managed/credentials/$credentialId/delete'
+  );
   const { data: selectedCredential, isFetching: isFetchingSelectedCredential } =
     useDialogData({
-      enabled:
-        match.routeId === '/managed/credentials/$credentialId/edit' ||
-        match.routeId === '/managed/credentials/$credentialId/delete',
-      paramKey: 'credentialId',
-      queryHook: useManagedCredentialQuery,
+      queryHook: managedCredentialQuery,
       redirectToOnNotFound: '/managed/credentials',
     });
 
@@ -239,14 +243,14 @@ export const CredentialList = () => {
         )}
       </Paginate>
       <DeletionDialog
-        onClose={() => {
-          setDeleteError(undefined);
-          navigate({ to: '/managed/credentials' });
-        }}
         entity="credential"
         error={deleteError}
         label={selectedCredential?.label || ''}
         loading={isFetchingSelectedCredential}
+        onClose={() => {
+          setDeleteError(undefined);
+          navigate({ to: '/managed/credentials' });
+        }}
         onDelete={handleDelete}
         open={isDeleteDialogOpen}
       />

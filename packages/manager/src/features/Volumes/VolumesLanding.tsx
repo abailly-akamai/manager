@@ -110,10 +110,9 @@ export const VolumesLanding = () => {
   const { isBlockStorageEncryptionFeatureEnabled } =
     useIsBlockStorageEncryptionFeatureEnabled();
 
+  const volumeQuery = useVolumeQuery(params.volumeId ?? -1, !!params.volumeId);
   const { data: selectedVolume, isFetching: isFetchingVolume } = useDialogData({
-    enabled: !!params.volumeId,
-    paramKey: 'volumeId',
-    queryHook: useVolumeQuery,
+    queryHook: volumeQuery,
     redirectToOnNotFound: '/volumes',
   });
 

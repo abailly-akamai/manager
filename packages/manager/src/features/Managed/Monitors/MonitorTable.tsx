@@ -1,6 +1,6 @@
 import { Button } from '@linode/ui';
 import Grid from '@mui/material/Grid2';
-import { useMatch, useNavigate } from '@tanstack/react-router';
+import { useMatch, useNavigate, useParams } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 
@@ -38,6 +38,9 @@ export type FormikProps = FormikBag<{}, ManagedServicePayload>;
 
 export const MonitorTable = () => {
   const navigate = useNavigate();
+  const params = useParams({
+    strict: false,
+  });
   const match = useMatch({ strict: false });
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -51,21 +54,21 @@ export const MonitorTable = () => {
   const [deleteError, setDeleteError] = React.useState<string | undefined>();
   const { mutateAsync: deleteServiceMonitor } = useDeleteMonitorMutation();
 
+  const allManagedIssuesQuery = useAllManagedIssuesQuery();
   const { data: issues } = useDialogData({
-    enabled: match.routeId === '/managed/monitors/$monitorId/issues',
-    paramKey: 'monitorId',
-    queryHook: useAllManagedIssuesQuery,
+    queryHook: allManagedIssuesQuery,
     redirectToOnNotFound: '/managed/monitors',
   });
 
+  const monitorQuery = useGetMonitorQuery(
+    params.monitorId ?? -1,
+    match.routeId === '/managed/monitors/$monitorId/edit' ||
+      match.routeId === '/managed/monitors/$monitorId/issues' ||
+      match.routeId === '/managed/monitors/$monitorId/delete'
+  );
   const { data: selectedMonitor, isFetching: isFetchingSelectedMonitor } =
     useDialogData({
-      enabled:
-        match.routeId === '/managed/monitors/$monitorId/edit' ||
-        match.routeId === '/managed/monitors/$monitorId/issues' ||
-        match.routeId === '/managed/monitors/$monitorId/delete',
-      paramKey: 'monitorId',
-      queryHook: useGetMonitorQuery,
+      queryHook: monitorQuery,
       redirectToOnNotFound: '/managed/monitors',
     });
 

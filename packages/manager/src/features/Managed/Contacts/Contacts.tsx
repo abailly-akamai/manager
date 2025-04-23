@@ -1,5 +1,5 @@
 import { Button } from '@linode/ui';
-import { useMatch, useNavigate } from '@tanstack/react-router';
+import { useMatch, useNavigate, useParams } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 
@@ -35,6 +35,9 @@ import { ContactsTableContent } from './ContactsTableContent';
 export const Contacts = () => {
   const navigate = useNavigate();
   const match = useMatch({ strict: false });
+  const params = useParams({
+    strict: false,
+  });
   const { enqueueSnackbar } = useSnackbar();
 
   const { data, dataUpdatedAt, error, isLoading } =
@@ -42,13 +45,14 @@ export const Contacts = () => {
 
   const contacts = data || [];
 
+  const contactQuery = useManagedContactQuery(
+    params.contactId ?? -1,
+    match.routeId === '/managed/contacts/$contactId/edit' ||
+      match.routeId === '/managed/contacts/$contactId/delete'
+  );
   const { data: selectedContact, isFetching: isSelectedContactFetching } =
     useDialogData({
-      enabled:
-        match.routeId === '/managed/contacts/$contactId/edit' ||
-        match.routeId === '/managed/contacts/$contactId/delete',
-      paramKey: 'contactId',
-      queryHook: useManagedContactQuery,
+      queryHook: contactQuery,
       redirectToOnNotFound: '/managed/contacts',
     });
 

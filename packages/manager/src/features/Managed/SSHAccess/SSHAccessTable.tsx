@@ -1,5 +1,5 @@
 import { useLinodeQuery } from '@linode/queries';
-import { useMatch } from '@tanstack/react-router';
+import { useMatch, useParams } from '@tanstack/react-router';
 import produce from 'immer';
 import * as React from 'react';
 
@@ -25,14 +25,16 @@ import type { ManagedLinodeSetting } from '@linode/api-v4/lib/managed';
 
 export const SSHAccessTable = () => {
   const match = useMatch({ strict: false });
+  const params = useParams({
+    strict: false,
+  });
   const { data: settings, error, isLoading } = useAllLinodeSettingsQuery();
 
   const data = settings || [];
 
+  const linodeQuery = useLinodeQuery(params.linodeId ?? -1, !!params.linodeId);
   const { data: selectedLinode, isFetching } = useDialogData({
-    enabled: match.routeId === '/managed/ssh-access/$linodeId/edit',
-    paramKey: 'linodeId',
-    queryHook: useLinodeQuery,
+    queryHook: linodeQuery,
     redirectToOnNotFound: '/managed/ssh-access',
   });
 

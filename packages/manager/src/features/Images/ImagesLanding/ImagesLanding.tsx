@@ -262,11 +262,10 @@ export const ImagesLanding = () => {
     }
   );
 
+  const imageQuery = useImageQuery(selectedImageId ?? -1, !!selectedImageId);
   const { data: selectedImage, isFetching: isFetchingSelectedImage } =
     useDialogData({
-      enabled: !!selectedImageId,
-      paramKey: 'imageId',
-      queryHook: useImageQuery,
+      queryHook: imageQuery,
       redirectToOnNotFound: '/images',
     });
 

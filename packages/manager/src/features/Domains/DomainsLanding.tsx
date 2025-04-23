@@ -98,10 +98,9 @@ export const DomainsLanding = (props: DomainsLandingProps) => {
 
   const { domainForEditing } = props;
 
+  const domainQuery = useDomainQuery(params.domainId ?? -1, !!params.domainId);
   const { data: selectedDomain, isFetching: isFetchingDomain } = useDialogData({
-    enabled: !!params.domainId,
-    paramKey: 'domainId',
-    queryHook: useDomainQuery,
+    queryHook: domainQuery,
     redirectToOnNotFound: '/domains',
   });
 
