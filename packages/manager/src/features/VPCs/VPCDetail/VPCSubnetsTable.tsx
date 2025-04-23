@@ -126,18 +126,22 @@ export const VPCSubnetsTable = (props: Props) => {
     generateSubnetsXFilter(query ?? '')
   );
 
+  const subnetQuery = useSubnetQuery(
+    Number(params.vpcId),
+    Number(params.subnetId),
+    !!params.vpcId && !!params.subnetId
+  );
   const { data: selectedSubnet, isFetching: isFetchingSubnet } = useDialogData({
-    enabled: !!params.vpcId && !!params.subnetId,
-    paramKey: 'vpcId',
-    queryHook: useSubnetQuery,
+    queryHook: subnetQuery,
     redirectToOnNotFound: '/vpcs/$vpcId',
-    secondaryParamKey: 'subnetId',
   });
 
+  const linodeQuery = useLinodeQuery(
+    Number(params.linodeId),
+    !!params.linodeId
+  );
   const { data: selectedLinode, isFetching: isFetchingLinode } = useDialogData({
-    enabled: !!params.linodeId,
-    paramKey: 'linodeId',
-    queryHook: useLinodeQuery,
+    queryHook: linodeQuery,
     redirectToOnNotFound: '/vpcs/$vpcId',
   });
 

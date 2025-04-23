@@ -82,10 +82,9 @@ export const PlacementGroupsLinodes = (props: Props) => {
     placementGroup?.members.some((pgLinode) => pgLinode.linode_id === linode.id)
   );
 
+  const linodeQuery = useLinodeQuery(params.linodeId ?? -1, !!params.linodeId);
   const { data: selectedLinode, isFetching: isFetchingLinode } = useDialogData({
-    enabled: !!params.linodeId,
-    paramKey: 'linodeId',
-    queryHook: useLinodeQuery,
+    queryHook: linodeQuery,
     redirectToOnNotFound: '/placement-groups/$id',
   });
 

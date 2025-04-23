@@ -112,14 +112,16 @@ export const PlacementGroupsLanding = React.memo(() => {
     }
   );
 
+  const placementGroupQuery = usePlacementGroupQuery(
+    Number(params.id),
+    !!params.id
+  );
   const {
     data: selectedPlacementGroup,
     isFetching: isFetchingPlacementGroup,
     isLoading: isLoadingPlacementGroup,
   } = useDialogData({
-    enabled: !!params.id,
-    paramKey: 'id',
-    queryHook: usePlacementGroupQuery,
+    queryHook: placementGroupQuery,
     redirectToOnNotFound: '/placement-groups',
   });
 

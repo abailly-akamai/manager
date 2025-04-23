@@ -54,7 +54,11 @@ const VPCLanding = () => {
     ['+order_by']: orderBy,
   };
 
-  const { data: vpcs, error, isLoading } = useVPCsQuery(
+  const {
+    data: vpcs,
+    error,
+    isLoading,
+  } = useVPCsQuery(
     {
       page: pagination.page,
       page_size: pagination.pageSize,
@@ -91,10 +95,9 @@ const VPCLanding = () => {
     globalGrantType: 'add_vpcs',
   });
 
+  const vpcQuery = useVPCQuery(Number(params.vpcId), !!params.vpcId);
   const { data: selectedVPC, isFetching: isFetchingVPC } = useDialogData({
-    enabled: !!params.vpcId,
-    paramKey: 'vpcId',
-    queryHook: useVPCQuery,
+    queryHook: vpcQuery,
     redirectToOnNotFound: '/vpcs',
   });
 
@@ -119,6 +122,7 @@ const VPCLanding = () => {
   return (
     <>
       <LandingHeader
+        breadcrumbProps={{ pathname: '/vpcs' }}
         buttonDataAttrs={{
           tooltipText: getRestrictedResourceText({
             action: 'create',
@@ -126,7 +130,6 @@ const VPCLanding = () => {
             resourceType: 'VPCs',
           }),
         }}
-        breadcrumbProps={{ pathname: '/vpcs' }}
         createButtonText="Create VPC"
         disabledCreateButton={isVPCCreationRestricted}
         docsLink={VPC_DOCS_LINK}

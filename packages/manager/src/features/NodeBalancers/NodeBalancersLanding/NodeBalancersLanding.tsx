@@ -56,15 +56,15 @@ export const NodeBalancersLanding = () => {
     filter
   );
 
-  const {
-    data: selectedNodeBalancer,
-    isFetching: isFetchingNodeBalancer,
-  } = useDialogData({
-    enabled: !!params.id,
-    paramKey: 'id',
-    queryHook: useNodeBalancerQuery,
-    redirectToOnNotFound: '/nodebalancers',
-  });
+  const nodeBalancerQuery = useNodeBalancerQuery(
+    Number(params.id),
+    !!params.id
+  );
+  const { data: selectedNodeBalancer, isFetching: isFetchingNodeBalancer } =
+    useDialogData({
+      queryHook: nodeBalancerQuery,
+      redirectToOnNotFound: '/nodebalancers',
+    });
 
   if (error) {
     return (
