@@ -10,7 +10,7 @@ interface Props {
 export const NotFound = (props: Props) => {
   return (
     <Placeholder
-      className={props.className}
+      className={`${props.className} not-found-placeholder`}
       icon={ErrorOutline}
       title="Not Found"
     />

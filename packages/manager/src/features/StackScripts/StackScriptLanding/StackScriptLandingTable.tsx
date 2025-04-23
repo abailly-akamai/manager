@@ -27,7 +27,7 @@ import {
   accountStackScriptFilter,
   communityStackScriptFilter,
 } from 'src/features/Linodes/LinodeCreate/Tabs/StackScripts/utilities';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 
 import { StackScriptSearchHelperText } from '../Partials/StackScriptSearchHelperText';
@@ -85,7 +85,7 @@ export const StackScriptLandingTable = (props: Props) => {
 
   const stackScriptQuery = useStackScriptQuery(Number(id), !!id);
   const { data: selectedStackScript, isFetching: isFetchingStackScript } =
-    useDialogData({
+    useValidateDialogData({
       queryHook: stackScriptQuery,
       redirectToOnNotFound: '/stackscripts/account',
     });

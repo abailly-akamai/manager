@@ -1,10 +1,11 @@
+import { usePreferences } from '@linode/queries';
 import { ActionsPanel } from '@linode/ui';
 import { FormLabel } from '@mui/material';
 import * as React from 'react';
 
 import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
+import { NotFound } from 'src/components/NotFound';
 import { TypeToConfirm } from 'src/components/TypeToConfirm/TypeToConfirm';
-import { usePreferences } from '@linode/queries';
 
 import type { APIError } from '@linode/api-v4/lib/types';
 import type { ActionButtonsProps } from '@linode/ui';
@@ -31,8 +32,8 @@ interface EntityInfo {
     | 'NodeBalancer'
     | 'Placement Group'
     | 'Subnet'
-    | 'VPC'
-    | 'Volume';
+    | 'Volume'
+    | 'VPC';
 }
 
 interface TypeToConfirmDialogProps {
@@ -51,7 +52,7 @@ interface TypeToConfirmDialogProps {
   /**
    * Error to be displayed in the dialog
    */
-  errors?: APIError[] | null | undefined;
+  errors?: APIError[] | null | string | undefined;
   /**
    * Makes the TextField use 100% of the available width
    * @default false
@@ -222,8 +223,15 @@ export const TypeToConfirmDialog = (props: CombinedProps) => {
           style={{ padding: 0 }}
         />
       }
-      error={errors ? errors[0].reason : undefined}
+      error={
+        errors && typeof errors === 'string'
+          ? errors
+          : errors && typeof errors === 'object'
+            ? errors[0].reason
+            : undefined
+      }
       isFetching={isFetching}
+      NotFoundComponent={NotFound}
       onClose={onClose}
       open={open}
       title={title}
@@ -231,12 +239,6 @@ export const TypeToConfirmDialog = (props: CombinedProps) => {
       {children}
       <TypeToConfirm
         {...getTypeToConfirmProps()}
-        onChange={(input) => {
-          setConfirmationValues({
-            ...confirmationValues,
-            confirmText: input,
-          });
-        }}
         data-testid={'dialog-confirm-text-input'}
         disabled={disableTypeToConfirmInput}
         expand={expand}
@@ -244,6 +246,12 @@ export const TypeToConfirmDialog = (props: CombinedProps) => {
         inputProps={inputProps}
         isCloseAccount={isCloseAccount}
         label={label}
+        onChange={(input) => {
+          setConfirmationValues({
+            ...confirmationValues,
+            confirmText: input,
+          });
+        }}
         textFieldStyle={textFieldStyle}
         typographyStyle={typographyStyle}
         typographyStyleSx={typographyStyleSx}

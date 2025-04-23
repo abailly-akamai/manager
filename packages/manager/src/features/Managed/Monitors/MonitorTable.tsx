@@ -14,7 +14,7 @@ import { TableCell } from 'src/components/TableCell';
 import { TableHead } from 'src/components/TableHead';
 import { TableRow } from 'src/components/TableRow';
 import { TableSortCell } from 'src/components/TableSortCell';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import {
   useAllManagedContactsQuery,
@@ -55,7 +55,7 @@ export const MonitorTable = () => {
   const { mutateAsync: deleteServiceMonitor } = useDeleteMonitorMutation();
 
   const allManagedIssuesQuery = useAllManagedIssuesQuery();
-  const { data: issues } = useDialogData({
+  const { data: issues } = useValidateDialogData({
     queryHook: allManagedIssuesQuery,
     redirectToOnNotFound: '/managed/monitors',
   });
@@ -67,7 +67,7 @@ export const MonitorTable = () => {
       match.routeId === '/managed/monitors/$monitorId/delete'
   );
   const { data: selectedMonitor, isFetching: isFetchingSelectedMonitor } =
-    useDialogData({
+    useValidateDialogData({
       queryHook: monitorQuery,
       redirectToOnNotFound: '/managed/monitors',
     });

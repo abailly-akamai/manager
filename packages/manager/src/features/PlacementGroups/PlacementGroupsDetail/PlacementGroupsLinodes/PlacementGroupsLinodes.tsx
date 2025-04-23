@@ -7,7 +7,7 @@ import * as React from 'react';
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField';
 import { PaginationFooter } from 'src/components/PaginationFooter/PaginationFooter';
 import { hasPlacementGroupReachedCapacity } from 'src/features/PlacementGroups/utils';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
@@ -83,7 +83,7 @@ export const PlacementGroupsLinodes = (props: Props) => {
   );
 
   const linodeQuery = useLinodeQuery(params.linodeId ?? -1, !!params.linodeId);
-  const { data: selectedLinode, isFetching: isFetchingLinode } = useDialogData({
+  const { data: selectedLinode, isFetching: isFetchingLinode } = useValidateDialogData({
     queryHook: linodeQuery,
     redirectToOnNotFound: '/placement-groups/$id',
   });

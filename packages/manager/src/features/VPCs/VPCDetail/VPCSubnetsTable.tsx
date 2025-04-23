@@ -27,7 +27,7 @@ import { TableRowEmpty } from 'src/components/TableRowEmpty/TableRowEmpty';
 import { TableSortCell } from 'src/components/TableSortCell';
 import { PowerActionsDialog } from 'src/features/Linodes/PowerActionsDialogOrDrawer';
 import { SubnetActionMenu } from 'src/features/VPCs/VPCDetail/SubnetActionMenu';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
@@ -131,7 +131,7 @@ export const VPCSubnetsTable = (props: Props) => {
     Number(params.subnetId),
     !!params.vpcId && !!params.subnetId
   );
-  const { data: selectedSubnet, isFetching: isFetchingSubnet } = useDialogData({
+  const { data: selectedSubnet, isFetching: isFetchingSubnet } = useValidateDialogData({
     queryHook: subnetQuery,
     redirectToOnNotFound: '/vpcs/$vpcId',
   });
@@ -140,7 +140,7 @@ export const VPCSubnetsTable = (props: Props) => {
     Number(params.linodeId),
     !!params.linodeId
   );
-  const { data: selectedLinode, isFetching: isFetchingLinode } = useDialogData({
+  const { data: selectedLinode, isFetching: isFetchingLinode } = useValidateDialogData({
     queryHook: linodeQuery,
     redirectToOnNotFound: '/vpcs/$vpcId',
   });

@@ -14,7 +14,7 @@ import { useMatch, useNavigate, useParams } from '@tanstack/react-router';
 import * as React from 'react';
 
 import { DocumentTitleSegment } from 'src/components/DocumentTitle';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useIsResourceRestricted } from 'src/hooks/useIsResourceRestricted';
 
 import { NodeBalancerDeleteDialog } from '../NodeBalancerDeleteDialog';
@@ -57,7 +57,7 @@ export const NodeBalancerSettings = () => {
 
   const nodebalancerQuery = useNodeBalancerQuery(Number(id), !!id);
   const { data: selectedNodeBalancer, isFetching: isFetchingNodeBalancer } =
-    useDialogData({
+    useValidateDialogData({
       queryHook: nodebalancerQuery,
       redirectToOnNotFound: '/nodebalancers',
     });

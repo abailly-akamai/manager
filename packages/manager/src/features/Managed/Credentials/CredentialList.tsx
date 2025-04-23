@@ -13,7 +13,7 @@ import { TableCell } from 'src/components/TableCell';
 import { TableHead } from 'src/components/TableHead';
 import { TableRow } from 'src/components/TableRow';
 import { TableSortCell } from 'src/components/TableSortCell';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import {
   useAllManagedCredentialsQuery,
@@ -59,7 +59,7 @@ export const CredentialList = () => {
       match.routeId === '/managed/credentials/$credentialId/delete'
   );
   const { data: selectedCredential, isFetching: isFetchingSelectedCredential } =
-    useDialogData({
+    useValidateDialogData({
       queryHook: managedCredentialQuery,
       redirectToOnNotFound: '/managed/credentials',
     });

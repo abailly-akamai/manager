@@ -1,4 +1,5 @@
 import type { PlacementGroup, Region } from '@linode/api-v4';
+import type { DataNotFound } from 'src/hooks/useValidateDialogData';
 
 export interface PlacementGroupsDrawerPropsBase {
   onClose: () => void;
@@ -14,6 +15,7 @@ export interface PlacementGroupsCreateDrawerProps {
 }
 
 export interface PlacementGroupsEditDrawerProps {
+  dataNotFound: DataNotFound;
   disableEditButton: boolean;
   isFetching: boolean;
   onClose: PlacementGroupsDrawerPropsBase['onClose'];

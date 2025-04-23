@@ -12,7 +12,7 @@ import { Notice } from '../Notice';
 
 import type { DialogProps as _DialogProps } from '@mui/material/Dialog';
 
-export interface DialogProps extends _DialogProps {
+interface BaseDialogProps extends _DialogProps {
   /**
    * Additional CSS to be applied to the Dialog.
    */
@@ -47,6 +47,14 @@ export interface DialogProps extends _DialogProps {
   title: string;
 }
 
+interface PropsWithNotFound extends BaseDialogProps {
+  NotFoundComponent?: React.ComponentType<
+    React.PropsWithChildren<{ className?: string }>
+  >;
+}
+
+export type DialogProps = PropsWithNotFound;
+
 /**
  * ## Overview
  * A modal dialog is a window that appears on top of a parent screen. It's called 'modal' because it creates a mode that disables the parent screen but keeps it visible. Users must interact with the modal to return to the main screen.
@@ -71,6 +79,7 @@ export const Dialog = React.forwardRef(
   (props: DialogProps, ref: React.Ref<HTMLDivElement>) => {
     const theme = useTheme();
     const {
+      NotFoundComponent,
       children,
       className,
       enableCloseOnBackdropClick = false,
@@ -101,14 +110,6 @@ export const Dialog = React.forwardRef(
 
     return (
       <StyledDialog
-        onClose={(_, reason) => {
-          if (
-            onClose &&
-            (reason !== 'backdropClick' || enableCloseOnBackdropClick)
-          ) {
-            onClose({}, 'escapeKeyDown');
-          }
-        }}
         aria-labelledby={titleID}
         closeAfterTransition={false}
         data-qa-dialog
@@ -117,6 +118,14 @@ export const Dialog = React.forwardRef(
         fullHeight={fullHeight}
         fullWidth={fullWidth}
         maxWidth={(fullWidth && maxWidth) ?? undefined}
+        onClose={(_, reason) => {
+          if (
+            onClose &&
+            (reason !== 'backdropClick' || enableCloseOnBackdropClick)
+          ) {
+            onClose({}, 'escapeKeyDown');
+          }
+        }}
         open={open}
         ref={ref}
         role="dialog"
@@ -135,32 +144,44 @@ export const Dialog = React.forwardRef(
             subtitle={subtitle}
             title={lastTitleRef.current}
           />
-          <DialogContent
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              overflowX: 'hidden',
-              paddingBottom: theme.spacing(3),
-            }}
-            className={className}
-          >
-            {isFetching ? (
-              <Box display="flex" justifyContent="center" my={4}>
-                <CircleProgress size="md" />
-              </Box>
-            ) : (
-              <>
-                {error && (
-                  <Notice spacingBottom={0} text={error} variant="error" />
-                )}
-                {lastChildrenRef.current}
-              </>
-            )}
-          </DialogContent>
+          {error && error === 'Not Found' && NotFoundComponent ? (
+            <Box
+              sx={{
+                '& .not-found-placeholder': {
+                  py: 0,
+                },
+              }}
+            >
+              <NotFoundComponent />
+            </Box>
+          ) : (
+            <DialogContent
+              className={className}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                overflowX: 'hidden',
+                paddingBottom: theme.spacing(3),
+              }}
+            >
+              {isFetching ? (
+                <Box display="flex" justifyContent="center" my={4}>
+                  <CircleProgress size="md" />
+                </Box>
+              ) : (
+                <>
+                  {error && error !== 'Not Found' && (
+                    <Notice spacingBottom={0} text={error} variant="error" />
+                  )}
+                  {lastChildrenRef.current}
+                </>
+              )}
+            </DialogContent>
+          )}
         </Box>
       </StyledDialog>
     );
-  }
+  },
 );
 
 const StyledDialog = styled(_Dialog, {

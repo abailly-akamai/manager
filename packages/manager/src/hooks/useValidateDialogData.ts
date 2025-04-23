@@ -4,17 +4,14 @@ import * as React from 'react';
 
 import type { APIError } from '@linode/api-v4';
 import type { UseQueryResult } from '@tanstack/react-query';
-import type { LinkProps } from '@tanstack/react-router';
+
+export type DataNotFound = 'Not Found' | undefined;
 
 interface Props<TEntity> {
   /**
    * The query hook to fetch the entity.
    */
   queryHook: UseQueryResult<TEntity, APIError[]>;
-  /**
-   * The route to redirect to if the entity is not found.
-   */
-  redirectToOnNotFound: LinkProps['to'];
 }
 
 /**
@@ -27,24 +24,22 @@ interface Props<TEntity> {
  * as providing a common API to route dialogs.
  * Because of the way our modals and drawers are mounted, handling not found content is critical when routing dialogs.
  */
-export const useDialogData = <TEntity>({
+export const useValidateDialogData = <TEntity>({
   queryHook,
-  redirectToOnNotFound,
 }: Props<TEntity>) => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const [isNotFound, setIsNotFound] = React.useState<DataNotFound>(undefined);
 
   React.useEffect(() => {
+    setIsNotFound(undefined);
     if (queryHook.isFetched && !queryHook.isLoading && !queryHook.data) {
-      enqueueSnackbar('Not found!', { variant: 'error' });
-      navigate({
-        params: undefined,
-        to: redirectToOnNotFound,
-      });
+      setIsNotFound('Not Found');
     }
-  }, [queryHook, enqueueSnackbar, navigate, redirectToOnNotFound]);
+  }, [queryHook, enqueueSnackbar, navigate]);
 
   return {
     ...queryHook,
+    isNotFound,
   };
 };

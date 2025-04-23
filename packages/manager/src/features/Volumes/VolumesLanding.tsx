@@ -25,7 +25,7 @@ import { TableRowEmpty } from 'src/components/TableRowEmpty/TableRowEmpty';
 import { TableSortCell } from 'src/components/TableSortCell';
 import { getRestrictedResourceText } from 'src/features/Account/utils';
 import { useAccountManagement } from 'src/hooks/useAccountManagement';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
@@ -111,7 +111,7 @@ export const VolumesLanding = () => {
     useIsBlockStorageEncryptionFeatureEnabled();
 
   const volumeQuery = useVolumeQuery(params.volumeId ?? -1, !!params.volumeId);
-  const { data: selectedVolume, isFetching: isFetchingVolume } = useDialogData({
+  const { data: selectedVolume, isFetching: isFetchingVolume } = useValidateDialogData({
     queryHook: volumeQuery,
     redirectToOnNotFound: '/volumes',
   });

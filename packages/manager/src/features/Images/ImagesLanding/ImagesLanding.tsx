@@ -37,7 +37,7 @@ import { TableRowEmpty } from 'src/components/TableRowEmpty/TableRowEmpty';
 import { TableRowError } from 'src/components/TableRowError/TableRowError';
 import { TableSortCell } from 'src/components/TableSortCell';
 import { getRestrictedResourceText } from 'src/features/Account/utils';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
@@ -264,7 +264,7 @@ export const ImagesLanding = () => {
 
   const imageQuery = useImageQuery(selectedImageId ?? -1, !!selectedImageId);
   const { data: selectedImage, isFetching: isFetchingSelectedImage } =
-    useDialogData({
+    useValidateDialogData({
       queryHook: imageQuery,
       redirectToOnNotFound: '/images',
     });

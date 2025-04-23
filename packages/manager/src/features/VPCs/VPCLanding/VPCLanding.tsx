@@ -19,7 +19,7 @@ import {
   VPC_LANDING_TABLE_PREFERENCE_KEY,
 } from 'src/features/VPCs/constants';
 import { VPC_DOCS_LINK, VPC_LABEL } from 'src/features/VPCs/constants';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
@@ -96,7 +96,7 @@ const VPCLanding = () => {
   });
 
   const vpcQuery = useVPCQuery(Number(params.vpcId), !!params.vpcId);
-  const { data: selectedVPC, isFetching: isFetchingVPC } = useDialogData({
+  const { data: selectedVPC, isFetching: isFetchingVPC } = useValidateDialogData({
     queryHook: vpcQuery,
     redirectToOnNotFound: '/vpcs',
   });

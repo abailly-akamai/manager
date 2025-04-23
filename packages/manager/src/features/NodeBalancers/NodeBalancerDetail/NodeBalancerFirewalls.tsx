@@ -19,7 +19,7 @@ import { TableRowError } from 'src/components/TableRowError/TableRowError';
 import { TableRowLoading } from 'src/components/TableRowLoading/TableRowLoading';
 import { RemoveDeviceDialog } from 'src/features/Firewalls/FirewallDetail/Devices/RemoveDeviceDialog';
 import { AddFirewallForm } from 'src/features/Linodes/LinodesDetail/LinodeNetworking/LinodeFirewalls/AddFirewallForm';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 
 import { NodeBalancerFirewallsRow } from './NodeBalancerFirewallsRow';
 
@@ -55,7 +55,7 @@ export const NodeBalancerFirewalls = (props: Props) => {
     isUnassignFirewallRoute
   );
   const { data: selectedFirewall, isFetching: isFetchingSelectedFirewall } =
-    useDialogData({
+    useValidateDialogData({
       queryHook: firewallQuery,
       redirectToOnNotFound: '/nodebalancers/$id/settings',
     });
@@ -64,7 +64,7 @@ export const NodeBalancerFirewalls = (props: Props) => {
     Number(params.firewallId ?? -1),
     isUnassignFirewallRoute
   );
-  const { data: devices, isFetching: isFetchingDevices } = useDialogData({
+  const { data: devices, isFetching: isFetchingDevices } = useValidateDialogData({
     queryHook: allFirewallDevicesQuery,
     redirectToOnNotFound: '/nodebalancers/$id/settings',
   });

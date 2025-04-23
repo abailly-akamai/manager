@@ -15,7 +15,7 @@ import { TableRow } from 'src/components/TableRow';
 import { TableSortCell } from 'src/components/TableSortCell/TableSortCell';
 import { TransferDisplay } from 'src/components/TransferDisplay/TransferDisplay';
 import { getRestrictedResourceText } from 'src/features/Account/utils';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useOrder } from 'src/hooks/useOrder';
 import { usePagination } from 'src/hooks/usePagination';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
@@ -61,7 +61,7 @@ export const NodeBalancersLanding = () => {
     !!params.id
   );
   const { data: selectedNodeBalancer, isFetching: isFetchingNodeBalancer } =
-    useDialogData({
+    useValidateDialogData({
       queryHook: nodeBalancerQuery,
       redirectToOnNotFound: '/nodebalancers',
     });

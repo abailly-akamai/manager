@@ -26,10 +26,10 @@ import { TableRow } from 'src/components/TableRow';
 import { TableRowEmpty } from 'src/components/TableRowEmpty/TableRowEmpty';
 import { TableSortCell } from 'src/components/TableSortCell/TableSortCell';
 import { getRestrictedResourceText } from 'src/features/Account/utils';
-import { useDialogData } from 'src/hooks/useDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 
 import {
@@ -120,10 +120,8 @@ export const PlacementGroupsLanding = React.memo(() => {
     data: selectedPlacementGroup,
     isFetching: isFetchingPlacementGroup,
     isLoading: isLoadingPlacementGroup,
-  } = useDialogData({
-    queryHook: placementGroupQuery,
-    redirectToOnNotFound: '/placement-groups',
-  });
+    isNotFound,
+  } = useValidateDialogData({ queryHook: placementGroupQuery });
 
   const { data: regions } = useRegionsQuery();
   const getPlacementGroupRegion = (
@@ -207,6 +205,7 @@ export const PlacementGroupsLanding = React.memo(() => {
   return (
     <>
       <LandingHeader
+        breadcrumbProps={{ pathname: PLACEMENT_GROUPS_LANDING_ROUTE }}
         buttonDataAttrs={{
           tooltipText: getRestrictedResourceText({
             action: 'create',
@@ -214,7 +213,6 @@ export const PlacementGroupsLanding = React.memo(() => {
             resourceType: 'Placement Groups',
           }),
         }}
-        breadcrumbProps={{ pathname: PLACEMENT_GROUPS_LANDING_ROUTE }}
         disabledCreateButton={isLinodeReadOnly}
         docsLink={PLACEMENT_GROUPS_DOCS_LINK}
         entity="Placement Group"
@@ -287,13 +285,13 @@ export const PlacementGroupsLanding = React.memo(() => {
                 placementGroup,
                 linodes
               )}
+              disabled={isLinodeReadOnly}
               handleDeletePlacementGroup={() =>
                 handleDeletePlacementGroup(placementGroup)
               }
               handleEditPlacementGroup={() =>
                 handleEditPlacementGroup(placementGroup)
               }
-              disabled={isLinodeReadOnly}
               key={`pg-${placementGroup.id}`}
               placementGroup={placementGroup}
               region={getPlacementGroupRegion(placementGroup)}
@@ -315,6 +313,7 @@ export const PlacementGroupsLanding = React.memo(() => {
         open={isPlacementGroupCreateDrawerOpen}
       />
       <PlacementGroupsEditDrawer
+        dataNotFound={isNotFound}
         disableEditButton={isLinodeReadOnly}
         isFetching={isFetchingPlacementGroup}
         onClose={onClosePlacementGroupDrawer}
@@ -326,6 +325,7 @@ export const PlacementGroupsLanding = React.memo(() => {
         disableUnassignButton={isLinodeReadOnly}
         isFetching={isLoadingPlacementGroup}
         linodes={linodes}
+        notFound={isNotFound}
         onClose={onClosePlacementGroupDrawer}
         open={params.action === 'delete'}
         selectedPlacementGroup={selectedPlacementGroup}

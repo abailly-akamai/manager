@@ -12,7 +12,7 @@ import { TableCell } from 'src/components/TableCell';
 import { TableHead } from 'src/components/TableHead';
 import { TableRow } from 'src/components/TableRow';
 import { TableSortCell } from 'src/components/TableSortCell';
-import { useDialogData } from 'src/hooks/useDialogData';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { useAllLinodeSettingsQuery } from 'src/queries/managed/managed';
 
@@ -33,7 +33,7 @@ export const SSHAccessTable = () => {
   const data = settings || [];
 
   const linodeQuery = useLinodeQuery(params.linodeId ?? -1, !!params.linodeId);
-  const { data: selectedLinode, isFetching } = useDialogData({
+  const { data: selectedLinode, isFetching } = useValidateDialogData({
     queryHook: linodeQuery,
     redirectToOnNotFound: '/managed/ssh-access',
   });

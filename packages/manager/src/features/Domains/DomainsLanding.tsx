@@ -1,3 +1,4 @@
+import { useLinodesQuery, useProfile } from '@linode/queries';
 import { Button, CircleProgress, ErrorState, Notice } from '@linode/ui';
 import { styled } from '@mui/material/styles';
 import { useLocation, useNavigate, useParams } from '@tanstack/react-router';
@@ -15,16 +16,15 @@ import { TableCell } from 'src/components/TableCell';
 import { TableHead } from 'src/components/TableHead';
 import { TableRow } from 'src/components/TableRow';
 import { TableSortCell } from 'src/components/TableSortCell';
-import { useDialogData } from 'src/hooks/useDialogData';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
+import { useValidateDialogData } from 'src/hooks/useValidateDialogData';
 import {
   useDeleteDomainMutation,
   useDomainQuery,
   useDomainsQuery,
   useUpdateDomainMutation,
 } from 'src/queries/domains';
-import { useLinodesQuery, useProfile } from '@linode/queries';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 
 import { CloneDomainDrawer } from './CloneDomainDrawer';
@@ -82,7 +82,11 @@ export const DomainsLanding = (props: DomainsLandingProps) => {
     ['+order_by']: orderBy,
   };
 
-  const { data: domains, error, isLoading } = useDomainsQuery(
+  const {
+    data: domains,
+    error,
+    isLoading,
+  } = useDomainsQuery(
     {
       page: pagination.page,
       page_size: pagination.pageSize,
@@ -99,10 +103,8 @@ export const DomainsLanding = (props: DomainsLandingProps) => {
   const { domainForEditing } = props;
 
   const domainQuery = useDomainQuery(params.domainId ?? -1, !!params.domainId);
-  const { data: selectedDomain, isFetching: isFetchingDomain } = useDialogData({
-    queryHook: domainQuery,
-    redirectToOnNotFound: '/domains',
-  });
+  const { data: selectedDomain, isFetching: isFetchingDomain } =
+    useValidateDialogData({ queryHook: domainQuery });
 
   const {
     error: deleteError,
@@ -257,13 +259,13 @@ export const DomainsLanding = (props: DomainsLandingProps) => {
           labelTitle: 'Domains',
           pathname: '/domains',
         }}
+        docsLink="https://techdocs.akamai.com/cloud-computing/docs/dns-manager"
+        entity="Domain"
         extraActions={
           <StyledButon buttonType="secondary" onClick={handleImport}>
             Import a Zone
           </StyledButon>
         }
-        docsLink="https://techdocs.akamai.com/cloud-computing/docs/dns-manager"
-        entity="Domain"
         onButtonClick={navigateToCreate}
         title="Domains"
       />
@@ -344,13 +346,13 @@ export const DomainsLanding = (props: DomainsLandingProps) => {
         open={params.action === 'edit'}
       />
       <DeletionDialog
+        entity="domain"
         error={
           deleteError
             ? getAPIErrorOrDefault(deleteError, 'Error deleting Domain.')[0]
                 .reason
             : undefined
         }
-        entity="domain"
         isFetching={isFetchingDomain}
         label={selectedDomain?.domain ?? 'Unknown'}
         loading={isDeleting}
