@@ -1,5 +1,5 @@
 import { isEmpty } from '@linode/api-v4/lib/request';
-import { QueryClient } from '@tanstack/react-query';
+import { QueryCache, QueryClient } from '@tanstack/react-query';
 
 import type { APIError, ResourcePage } from '@linode/api-v4/lib/types';
 import type { QueryKey, UseMutationOptions } from '@tanstack/react-query';
@@ -54,6 +54,19 @@ export const queryClientFactory = (
   preset: 'longLived' | 'oneTimeFetch' = 'oneTimeFetch',
 ) => {
   return new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error, query) => {
+        if (getIsAPIErrorArray(error)) {
+          // If the error is an auth error and the profile query has been retried 2 times, redirect to logout in order not to serve a completely broken experience to the user.
+          if (
+            query.queryKey.includes('profile') &&
+            query.state.errorUpdateCount === 2
+          ) {
+            window.location.href = '/logout';
+          }
+        }
+      },
+    }),
     defaultOptions: {
       queries: {
         retry(failureCount, error) {
